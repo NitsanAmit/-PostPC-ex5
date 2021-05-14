@@ -1,19 +1,18 @@
 package exercise.android.reemh.todo_items;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
-  public TodoItemsHolder holder = null;
   private EditText editText;
 
   @Override
@@ -21,15 +20,8 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    if (holder == null) {
-      if (savedInstanceState == null || savedInstanceState.get("items_holder") == null) {
-        holder = new TodoItemsHolderImpl();
-      } else {
-        this.holder = (TodoItemsHolder) savedInstanceState.getSerializable("items_holder");
-      }
-    }
     RecyclerView recyclerView = findViewById(R.id.recyclerTodoItemsList);
-    TodoItemsRecyclerAdapter adapter = new TodoItemsRecyclerAdapter(holder);
+    TodoItemsRecyclerAdapter adapter = new TodoItemsRecyclerAdapter(TodoItemsStore.getInstance(), this::startEditTodoActivity);
     recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
     recyclerView.setAdapter(adapter);
 
@@ -38,14 +30,11 @@ public class MainActivity extends AppCompatActivity {
     if (savedInstanceState != null && savedInstanceState.get("user_input") != null) {
       editText.setText(savedInstanceState.getString("user_input"));
     }
-
     editText.addTextChangedListener(new TextWatcher() {
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
       }
-
       public void onTextChanged(CharSequence s, int start, int before, int count) {
       }
-
       public void afterTextChanged(Editable s) {
         fab.setClickable(!TextUtils.isEmpty(editText.getText()));
       }
@@ -53,17 +42,24 @@ public class MainActivity extends AppCompatActivity {
 
     fab.setOnClickListener(view -> {
       if (TextUtils.isEmpty(editText.getText())) return;
-      holder.addNewInProgressItem(editText.getText().toString());
+      TodoItemsStore.getInstance().addNewInProgressItem(editText.getText().toString());
       editText.setText("");
       adapter.notifyDataSetChanged();
     });
   }
 
+  private void startEditTodoActivity(TodoItem item) {
+    Intent intent = new Intent(MainActivity.this, EditTodoActivity.class);
+    intent.putExtra("todo_key", item.getId());
+    startActivity(intent);
+  }
+
   @Override
-  protected void onSaveInstanceState(@NonNull Bundle outState) {
-    super.onSaveInstanceState(outState);
-    outState.putSerializable("items_holder", holder);
-    outState.putString("user_input", editText.getText().toString());
+  protected void onRestart() {
+    TodoItemsStore.getInstance().sortItems();
+    RecyclerView recyclerView = findViewById(R.id.recyclerTodoItemsList);
+    Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
+    super.onRestart();
   }
 
 }

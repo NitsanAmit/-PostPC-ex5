@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import static org.mockito.ArgumentMatchers.eq;
 
@@ -23,20 +25,36 @@ import static org.mockito.ArgumentMatchers.eq;
 public class MainActivityTest extends TestCase {
 
   private ActivityController<MainActivity> activityController;
-  private TodoItemsHolder mockHolder;
+  private TodoItemsStore mockHolder;
 
   @Before
   public void setup(){
-    mockHolder = Mockito.mock(TodoItemsHolder.class);
+    mockHolder = Mockito.mock(TodoItemsStore.class);
+
+    // Use reflection to override the singleton instance
+    try {
+      Field instance = TodoItemsStore.class.getDeclaredField("instance");
+      instance.setAccessible(true);
+      instance.set(instance, mockHolder);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
     // when asking the `mockHolder` to get the current items, return an empty list
     Mockito.when(mockHolder.getCurrentItems())
       .thenReturn(new ArrayList<>());
 
     activityController = Robolectric.buildActivity(MainActivity.class);
+  }
 
-    // let the activity use our `mockHolder` as the TodoItemsHolder
-    MainActivity activityUnderTest = activityController.get();
-    activityUnderTest.holder = mockHolder;
+  @After
+  public void tearDown(){
+    try {
+      Field instance = TodoItemsStore.class.getDeclaredField("instance");
+      instance.setAccessible(true);
+      instance.set(instance, null);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Test

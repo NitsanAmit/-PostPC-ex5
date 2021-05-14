@@ -14,7 +14,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_addingTodoItem_then_callingListShouldHaveThisItem(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     assertEquals(0, holderUnderTest.getCurrentItems().size());
 
     // test
@@ -27,7 +27,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_addingMultipleTodoItem_then_callingListShouldHaveTheseItems(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     assertEquals(0, holderUnderTest.getCurrentItems().size());
 
     // test
@@ -51,7 +51,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_deletingTodoItem_then_callingListShouldNotHaveThisItems(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     assertEquals(0, holderUnderTest.getCurrentItems().size());
     holderUnderTest.addNewInProgressItem("A");
 
@@ -66,7 +66,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_deletingMultipleTodoItem_then_callingListShouldNotHaveTheseItems(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     holderUnderTest.addNewInProgressItem("A");
     holderUnderTest.addNewInProgressItem("B");
     holderUnderTest.addNewInProgressItem("C");
@@ -90,7 +90,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_modifyingCurrentItems_then_shouldntModifyOriginalList(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     holderUnderTest.addNewInProgressItem("A");
     holderUnderTest.addNewInProgressItem("B");
 
@@ -106,7 +106,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_callingSetItemProgressWithWrongIndex_then_shouldThrowIoobException(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     holderUnderTest.addNewInProgressItem("A");
     holderUnderTest.addNewInProgressItem("B");
 
@@ -123,7 +123,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_callingSetItemProgress_then_shouldSetCorrectProgress(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     holderUnderTest.addNewInProgressItem("A");
     holderUnderTest.addNewInProgressItem("B");
 
@@ -138,7 +138,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_callingMarkItemInProgressOnInProgressTodo_then_shouldDoNothing(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     holderUnderTest.addNewInProgressItem("A");
     holderUnderTest.addNewInProgressItem("B");
 
@@ -151,7 +151,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_callingMarkItemInProgressOnCompletedTodo_then_shouldChangeProgress(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     holderUnderTest.addNewInProgressItem("A");
 
     // test
@@ -165,7 +165,7 @@ public class TodoItemsHolderImplTest extends TestCase {
   @Test
   public void when_deletingItemNotInTheList_then_shouldDoNothing(){
     // setup
-    TodoItemsHolderImpl holderUnderTest = new TodoItemsHolderImpl();
+    TodoItemsStore holderUnderTest = TodoItemsStore.getInstance();
     holderUnderTest.addNewInProgressItem("A");
     holderUnderTest.addNewInProgressItem("B");
     holderUnderTest.addNewInProgressItem("C");

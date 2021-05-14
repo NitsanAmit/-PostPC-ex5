@@ -1,6 +1,7 @@
 package exercise.android.reemh.todo_items;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class TodoItemsRecyclerAdapter extends RecyclerView.Adapter<TodoItemViewHolder> {
 
     TodoItemsHolder itemsHolder;
+    OnTodoItemClick listener;
     private boolean onBind;
 
-    public TodoItemsRecyclerAdapter(TodoItemsHolder itemsHolder) {
+    public TodoItemsRecyclerAdapter(TodoItemsHolder itemsHolder, OnTodoItemClick listener) {
         this.itemsHolder = itemsHolder;
+        this.listener = listener;
     }
 
     @NonNull
@@ -32,6 +35,12 @@ public class TodoItemsRecyclerAdapter extends RecyclerView.Adapter<TodoItemViewH
         onBind = true;
         TodoItem item = itemsHolder.getCurrentItems().get(position);
         holder.todoText.setText(item.getTodoText());
+        if (!TextUtils.isEmpty(item.getDescription())) {
+            holder.todoDescription.setText(item.getDescription());
+            holder.todoDescription.setVisibility(View.VISIBLE);
+        }else {
+            holder.todoDescription.setVisibility(View.GONE);
+        }
         holder.todoCheckbox.setChecked(item.getCompleted());
         holder.todoCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!onBind) {
@@ -45,6 +54,11 @@ public class TodoItemsRecyclerAdapter extends RecyclerView.Adapter<TodoItemViewH
                 notifyDataSetChanged();
             }
         });
+        holder.itemView.setOnClickListener(view -> {
+            if (!onBind) {
+                this.listener.todoItemClicked(item);
+            }
+        });
         onBind = false;
     }
 
@@ -53,18 +67,23 @@ public class TodoItemsRecyclerAdapter extends RecyclerView.Adapter<TodoItemViewH
         return itemsHolder.getCurrentItems().size();
     }
 
+
 }
 
 class TodoItemViewHolder extends RecyclerView.ViewHolder {
 
     TextView todoText;
+    TextView todoDescription;
     CheckBox todoCheckbox;
     ImageButton todoDelete;
+    View itemView;
 
     public TodoItemViewHolder(@NonNull View itemView) {
         super(itemView);
         this.todoText = itemView.findViewById(R.id.text_todo);
+        this.todoDescription = itemView.findViewById(R.id.text_todo_description);
         this.todoCheckbox = itemView.findViewById(R.id.checkbox_todo);
         this.todoDelete = itemView.findViewById(R.id.btn_delete_todo);
+        this.itemView = itemView;
     }
 }

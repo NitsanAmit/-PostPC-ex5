@@ -12,12 +12,33 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp" />
 
-    <TextView
+    <LinearLayout
         android:layout_weight="1"
-        android:id="@+id/text_todo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Do laundry" />
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        >
+
+    <TextView
+        android:id="@+id/text_todo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Do laundry"
+        android:textStyle="bold"
+        android:textSize="16sp"
+
+        />
+
+    <TextView
+        android:id="@+id/text_todo_description"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Use soap"
+        android:visibility="visible"
+        />
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/btn_delete_todo"

@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TodoItemsHolderImpl implements TodoItemsHolder {
+public class TodoItemsStore implements TodoItemsHolder {
 
-  private final List<TodoItem> items;
+  private static TodoItemsStore instance;
+  private List<TodoItem> items;
 
-  public TodoItemsHolderImpl() {
-    this.items = new ArrayList<>();
+  private TodoItemsStore() { }
+
+  public static TodoItemsStore getInstance() {
+    if (instance == null){
+      instance = new TodoItemsStore();
+    }
+    return instance;
   }
 
   @Override
@@ -34,7 +40,23 @@ public class TodoItemsHolderImpl implements TodoItemsHolder {
     items.remove(item);
   }
 
-  private void sortItems() {
+  @Override
+  public void setItems(List<TodoItem> items) {
+    this.items = items;
+  }
+
+  @Override
+  public TodoItem getItemById(String itemId) {
+    for (TodoItem item : items) {
+      if (item.getId().equals(itemId)) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public void sortItems() {
     Collections.sort(this.items, ((o1, o2) -> {
       if (o1.getCompleted() == o2.getCompleted()) {
         return Long.compare(o1.getCreationTime(), o2.getCreationTime());
@@ -42,6 +64,6 @@ public class TodoItemsHolderImpl implements TodoItemsHolder {
         return o1.getCompleted() ? 1 : -1;
       }
     }));
-  }
 
+  }
 }
