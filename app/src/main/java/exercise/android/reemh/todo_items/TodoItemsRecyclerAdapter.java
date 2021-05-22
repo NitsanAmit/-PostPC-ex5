@@ -1,6 +1,7 @@
 package exercise.android.reemh.todo_items;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,11 @@ public class TodoItemsRecyclerAdapter extends RecyclerView.Adapter<TodoItemViewH
             holder.todoDescription.setVisibility(View.GONE);
         }
         holder.todoCheckbox.setChecked(item.getCompleted());
+        if (item.getCompleted()) {
+            holder.todoText.setPaintFlags(holder.todoText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            holder.todoText.setPaintFlags(holder.todoText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
         holder.todoCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!onBind) {
                 itemsHolder.setItemProgress(position, isChecked);
